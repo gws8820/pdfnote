@@ -1,0 +1,9 @@
+{
+  "name": "pdfnote",
+  "displayName": "PDFNote",
+  "version": "1.0.0",
+  "description": "Turn a PDF into a single HTML study page with each page shown beside an explanation note, and keep refining the notes in conversation",
+  "author": { "name": "Geonwoo Seo" },
+  "license": "MIT",
+  "keywords": ["pdf", "study", "notes", "lecture", "slides", "textbook"]
+}
