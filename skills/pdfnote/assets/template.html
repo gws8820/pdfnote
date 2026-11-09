@@ -644,7 +644,8 @@ function isMobile(){ return window.matchMedia('(max-width: 900px)').matches; }
 
 function applyImageSize(){
   const img = el.pageImg;
-  el.pdfWrap.style.overflow = (zoomPct > 100 && !isMobile()) ? 'auto' : 'hidden';
+  el.pdfWrap.style.overflow = zoomPct > 100 ? 'auto' : 'hidden';
+  img.parentElement.style.width = isMobile() ? zoomPct + '%' : '';
   if(isMobile()){
     img.style.width = '100%';
     img.style.height = 'auto';
