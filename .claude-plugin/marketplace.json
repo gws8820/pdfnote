@@ -1,6 +1,7 @@
 {
   "name": "pdfnote",
   "owner": { "name": "Geonwoo Seo" },
+  "description": "Turn a PDF into a single HTML study page with each page shown beside an explanation note, and keep refining the notes in conversation",
   "plugins": [
     {
       "name": "pdfnote",
