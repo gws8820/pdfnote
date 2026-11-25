@@ -1,4 +1,5 @@
 import json
+from html import escape
 import re
 import sys
 from pathlib import Path
@@ -56,7 +57,9 @@ def main():
         sys.exit(USAGE)
 
     payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
-    path.write_text(html[:start] + payload + html[end:], encoding="utf-8")
+    html = html[:start] + payload + html[end:]
+    html = re.sub(r"<title>.*?</title>", lambda _: f"<title>{escape(data['title'])}</title>", html, count=1)
+    path.write_text(html, encoding="utf-8")
 
 
 if __name__ == "__main__":

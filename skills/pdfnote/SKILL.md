@@ -49,7 +49,13 @@ sudo apt install poppler-utils # or: brew install poppler
    ```
 
 4. Run `python3 S/note.py "OUT" status` and fill any pages listed under `missing notes`.
-5. Send the HTML file to the user. Reply with one or two sentences only; do not repeat the notes in the chat.
+5. Deliver it (see "Delivering the note" below). Reply with one or two sentences only; do not repeat the notes in the chat.
+
+## Delivering the note
+
+- If an Artifact tool is available (claude.ai, Claude Code on the web, Cowork), publish OUT as an Artifact and give the user its link. Do not send only the HTML file. The template already works inside the artifact viewer.
+- After every later note edit, republish the same OUT path so the link stays the same.
+- Send the HTML file itself only when no Artifact tool is available or the user asks for the file.
 
 ## Follow-up requests
 
@@ -58,7 +64,7 @@ Change a note only when the user explicitly asks for a change. Otherwise answer 
 | Case | Signals | Action | Chat reply |
 |---|---|---|---|
 | Chat answer (default) | A question with no edit verb ("what is", "why", "how", "what's the difference", "I don't get it"; "뭐야", "왜", "어떻게", "차이가 뭐야", "이해가 안 돼"), even when it names a page; a question that names no page; a question spanning several pages; a question about the note file itself (progress, missing pages) | Do not run `set`. Do not send the HTML | A full answer in the chat |
-| Note edit | An edit verb ("add", "put in", "update", "fix", "change", "rewrite", "remove"; "추가해", "넣어", "반영해", "고쳐", "바꿔", "다시 써", "빼", "정리해서 넣어"); the user points out an error in a note ("page 12 is wrong", "12페이지 이거 틀렸어"); the user pastes content with a page number and no question | Revise the note (steps below) and send the updated HTML | One sentence naming the revised page and what changed |
+| Note edit | An edit verb ("add", "put in", "update", "fix", "change", "rewrite", "remove"; "추가해", "넣어", "반영해", "고쳐", "바꿔", "다시 써", "빼", "정리해서 넣어"); the user points out an error in a note ("page 12 is wrong", "12페이지 이거 틀렸어"); the user pastes content with a page number and no question | Revise the note (steps below) and deliver the updated page | One sentence naming the revised page and what changed |
 | Both | A question plus an edit verb ("explain it and add it to the note", "설명해주고 노트에도 넣어") | Answer in the chat, then revise the note | The full answer, then one sentence naming the revised page |
 
 Examples:
@@ -79,7 +85,7 @@ When a request is still unclear after this table, answer in the chat; do not edi
 
 1. Read the current note with `python3 S/note.py "OUT" show N`.
 2. Rewrite the note so it reflects the requested change or the pasted content: correct, expand, or reorganize the existing text where it belongs. Do not tack it on at the end as a separate section.
-3. Replace the note with `set`, then send the updated HTML file to the user:
+3. Replace the note with `set`, then deliver the updated page (republish the Artifact, or send the file):
 
    ```bash
    python3 S/note.py "OUT" set <<'EOF'
@@ -116,7 +122,8 @@ Exclude:
 
 Format:
 - Start every note with a "# " title; use no other heading level except "### "
-- After the title, write a short introductory paragraph
+- Right under the title, put an importance line on a 5-level scale, rated against what the user is studying for, so a reader short on time can pick pages: `**중요도 ★★★★☆ (중요)**`. Levels: 5 핵심, 4 중요, 3 알아두면 좋음, 2 훑어보기, 1 건너뛰어도 됨 (translate the labels to the user's language). In the first page's note, add one line with the legend and the list of 5-level pages
+- After the importance line, write a short introductory paragraph
 - Use "### " only when a subheading is needed
 - Use "- " bullets only for lists of items
 - Use a markdown table only for tabular data

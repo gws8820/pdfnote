@@ -1,5 +1,6 @@
 import base64
 import json
+from html import escape
 import shutil
 import subprocess
 import sys
@@ -80,7 +81,9 @@ def main():
     data = {"title": title, "pages": [{"image": image, "note": "", "text": text} for image, text in pages]}
     payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(TEMPLATE.read_text(encoding="utf-8").replace("__PDFNOTE_DATA__", payload), encoding="utf-8")
+    html = TEMPLATE.read_text(encoding="utf-8").replace("__PDFNOTE_DATA__", payload)
+    html = html.replace("<title>PDFNote</title>", f"<title>{escape(title)}</title>", 1)
+    out_path.write_text(html, encoding="utf-8")
     print(f"pages: {len(pages)}, size: {out_path.stat().st_size / 1024 / 1024:.1f} MB")
 
 
