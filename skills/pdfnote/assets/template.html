@@ -636,7 +636,7 @@ function renderPageImage(){
   el.pageCanvas.style.display = 'none';
   img.src = notebook.pages[currentPage-1].image;
   syncZoomControls();
-  img.onload = ()=>{ applyImageSize(); updateGrabCursor(); syncMobileStageHeight(); sharpenPageImage(); };
+  img.onload = ()=>{ applyImageSize(); updateGrabCursor(); syncMobileStageHeight(); scrollPdfToEdge(); sharpenPageImage(); };
   applyImageSize();
   updateGrabCursor();
   hideHlToolbar();
@@ -683,11 +683,16 @@ function syncMobileStageHeight(){
   }
 }
 
-function goToPage(num){
+let scrollToBottomOnLoad = false;
+function scrollPdfToEdge(){
+  el.pdfWrap.scrollTop = scrollToBottomOnLoad ? el.pdfWrap.scrollHeight : 0;
+}
+function goToPage(num, fromBottom){
+  scrollToBottomOnLoad = !!fromBottom;
   exitEditMode();
   currentPage = Math.max(1, Math.min(totalPages(), num));
   try{ localStorage.setItem(PAGE_KEY, currentPage); }catch(e){}
-  el.pdfWrap.scrollTop = 0;
+  scrollPdfToEdge();
   renderNotepad();
   renderPageImage();
 }
@@ -791,7 +796,7 @@ el.pdfWrap.addEventListener('wheel', (e)=>{
     e.preventDefault();
     scrollAccum += e.deltaY;
     if(scrollAccum < -SCROLL_TURN_THRESHOLD && currentPage > 1){
-      goToPage(currentPage-1);
+      goToPage(currentPage-1, true);
       scrollAccum = 0;
     }
   }else{
