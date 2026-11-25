@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PDFNote</title>
-<link rel="stylesheet" crossorigin href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/static/pretendard.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap">
 <style>
 :root{
   --page-bg:#ebe9e4;
@@ -18,9 +17,12 @@
   --border:#e8e6e1;
   --accent:#2f3e52;
   --accent-soft:#eceff2;
-  --sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --sans: "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
 }
 *{box-sizing:border-box;}
+/* Claude artifact viewers add img{max-width:100%}, which squashes the page when zoomed. */
+#pageImg{max-width:none !important; max-height:none !important;}
+.page-box{max-width:none !important;}
 html,body{ margin:0; padding:0; height:100%; background:var(--page-bg); font-family:var(--sans); color:var(--ink); -webkit-font-smoothing:antialiased; }
 
 body{ padding:18px; }
@@ -321,9 +323,9 @@ body.resizing #pageImg{ transition:none; }
 </div>
 
 <script id="pdfnote-data" type="application/json">__PDFNOTE_DATA__</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/16.3.0/lib/marked.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@16.3.0/lib/marked.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <script>
 const notebook = JSON.parse(document.getElementById('pdfnote-data').textContent);
 let currentPage = 1;
@@ -549,6 +551,7 @@ function updateNoteView(markdownText){
         {left: "\\(", right: "\\)", display: false},
       ],
       throwOnError: false,
+      output: 'mathml',
     });
   }
 }
@@ -716,6 +719,8 @@ function saveNotebookToFile(){
   URL.revokeObjectURL(url);
 }
 
+// Downloads do not work inside a sandboxed viewer such as a Claude artifact, so hide the button there.
+if(window.self !== window.top) el.saveBtn.style.display = 'none';
 el.saveBtn.addEventListener('click', saveNotebookToFile);
 el.prevBtn.addEventListener('click', ()=>goToPage(currentPage-1));
 el.nextBtn.addEventListener('click', ()=>goToPage(currentPage+1));
